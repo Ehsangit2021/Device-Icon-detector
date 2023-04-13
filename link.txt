@@ -2,3 +2,10 @@ https://betterprogramming.pub/building-a-photo-translator-using-python-with-the-
 
 solution:
 https://stackoverflow.com/questions/50951955/pytesseract-tesseractnotfound-error-tesseract-is-not-installed-or-its-not-i
+
+https://www.google.com/search?client=firefox-b-d&q=python+pdf+to+image
+
+https://levelup.gitconnected.com/4-python-libraries-to-convert-pdf-to-images-7a09eba83a09
+
+https://pypi.org/project/pypdfium2/
+
