@@ -1,0 +1,4 @@
+https://betterprogramming.pub/building-a-photo-translator-using-python-with-the-google-translator-api-94b8da75f7f8
+
+solution:
+https://stackoverflow.com/questions/50951955/pytesseract-tesseractnotfound-error-tesseract-is-not-installed-or-its-not-i
