@@ -19,7 +19,7 @@ st.write('Currently, we support some basic devices!')
 img1 = st.file_uploader("Select your input file", type=["jpg"])
 
 
-pytesseract.pytesseract.tesseract_cmd = 'C:/Users/Ethan/AppData/Local/Programs/Tesseract-OCR/tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = 'C:/Users/Ethan/AppData/Local/Tesseract-OCR/tesseract.exe'
 
 with st.spinner('Wait for it...'): 
     if img1:
