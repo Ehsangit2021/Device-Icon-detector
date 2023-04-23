@@ -4,6 +4,7 @@ import pytesseract
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import cv2
 
 im = Image.open("./favicon.ico")
 st.set_page_config(
@@ -19,7 +20,7 @@ st.write('Currently, we support some basic devices!')
 img1 = st.file_uploader("Select your input file", type=["jpg"])
 
 
-pytesseract.pytesseract.tesseract_cmd = 'C:/Users/Ethan/AppData/Local/Tesseract-OCR/tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesseract.exe'
 
 with st.spinner('Wait for it...'): 
     if img1:
@@ -34,6 +35,7 @@ with st.spinner('Wait for it...'):
             if 'VB' in i:
                 vocab_dict.append(i)
                 counter += 1
+
         st.success(f'Count for devices including VB in their name is: {counter}')
 
         if vocab_dict is not None:
@@ -54,7 +56,27 @@ with st.spinner('Wait for it...'):
         final_data = temp2[(temp2.iloc[:,11]!='')]
 
         st.write(pd.DataFrame(final_data))
+
+        for i in range(len(final_data)):
+            if i == 898:
+                print(' ')
+            print(i)
+            if final_data.iloc[i,11] == None:
+                continue
+            if 'VB' in final_data.iloc[i,11]:
+                img2 = cv2.rectangle(np.array(img), (int(final_data.iloc[i,6]),int(final_data.iloc[i,7])), ( int(final_data.iloc[i,6]) + int(final_data.iloc[i,8]), int(final_data.iloc[i,7]) + int(final_data.iloc[i,9])), color=(0,255,0), thickness=20)
+
+        cv2.imwrite("img2.jpg", img2)
+
         pd.DataFrame(final_data).to_csv('text.csv')
 
-        st.image(img)
+        st.image(img2)
 
+
+        image_path = 'img2.jpg'
+
+        # Define the HTML hyperlink with the image
+        html_string = f'<a href="{image_path}" target="_blank"><img src="{image_path}" width="200" caption="legend"></a>'
+
+        # Display the image using `st.markdown`
+        st.markdown(html_string, unsafe_allow_html=True)
