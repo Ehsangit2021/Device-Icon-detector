@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
+import os
 
 im = Image.open("./favicon.ico")
 st.set_page_config(
@@ -16,8 +17,11 @@ st.set_page_config(
 st.title('This project is to identify all types of devices and instrument in P&ID map.')
 
 st.write('Currently, we support some basic devices!')
-
-img1 = st.file_uploader("Select your input file", type=["jpg"])
+col1, col2 = st.columns([1,3])
+with col1:
+    selected_option = st.selectbox('Select the Device',('VB','QV94','VV94','CV94','NC'))
+with col2:
+    img1 = st.file_uploader("Select your P&ID file", type=["jpg"])
 
 
 pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesseract.exe'
@@ -32,52 +36,60 @@ with st.spinner('Wait for it...'):
         counter=0
         vocab_dict = []
         for i in matrices:
-            if 'VB' in i:
+            if selected_option in i:
                 vocab_dict.append(i)
                 counter += 1
 
-        st.success(f'Count for devices including VB in their name is: {counter}')
+        st.success(f'Count for devices including {selected_option} in their name is: {counter}')
 
-        if vocab_dict is not None:
-            st.header('Found Devices:')
-            for key, FoundString in enumerate(vocab_dict):
-                with st.expander(str(key+1)):
-                    with st.container():
-                        st.info(FoundString)
-                        # st.button(f'go to page {int(values[2])+1}', key='btn'+str(key), on_click=change_page, args=(int(values[2])+1,))
-                        # st.write('----------------------------------')
-                        # st.selectbox('Please select the type!', type_list, key='sb'+str(key), on_change=update_diagram, args=(key,))
+        if counter == 0:
+            st.image(img)
 
-        texts = pytesseract.image_to_data(img)
-        texts2 = texts.replace('\t', ',')
+        else:
 
-        temp = list(texts.split('\n'))
-        temp2 = pd.DataFrame([temp[i].split('\t') for i,j in enumerate(temp)])
-        final_data = temp2[(temp2.iloc[:,11]!='')]
+            if vocab_dict is not None:
+                st.header('Found Devices:')
+                for key, FoundString in enumerate(vocab_dict):
+                    with st.expander(str(key+1)):
+                        with st.container():
+                            st.info(FoundString)
+                            # st.button(f'go to page {int(values[2])+1}', key='btn'+str(key), on_click=change_page, args=(int(values[2])+1,))
+                            # st.write('----------------------------------')
+                            # st.selectbox('Please select the type!', type_list, key='sb'+str(key), on_change=update_diagram, args=(key,))
 
-        st.write(pd.DataFrame(final_data))
+            texts = pytesseract.image_to_data(img)
+            texts2 = texts.replace('\t', ',')
 
-        img2 = img
+            temp = list(texts.split('\n'))
+            temp2 = pd.DataFrame([temp[i].split('\t') for i,j in enumerate(temp)])
+            final_data = temp2[(temp2.iloc[:,11]!='')]
 
-        for i in range(len(final_data)):
-            if final_data.iloc[i,11] == None:
-                continue
-            if 'VB' in final_data.iloc[i,11]:
-                img2 = cv2.rectangle(np.array(img2), (int(final_data.iloc[i,6]),int(final_data.iloc[i,7])), ( int(final_data.iloc[i,6]) + int(final_data.iloc[i,8]), int(final_data.iloc[i,7]) + int(final_data.iloc[i,9])), color=(255,0,0), thickness=2)
+            st.write(pd.DataFrame(final_data))
 
-        image_path = './static/img2.jpg'
+            img2 = img
 
-        cv2.imwrite(image_path, img2)
+            for i in range(len(final_data)):
+                if final_data.iloc[i,11] == None:
+                    continue
+                if selected_option in final_data.iloc[i,11]:
+                    img2 = cv2.rectangle(np.array(img2), (int(final_data.iloc[i,6]),int(final_data.iloc[i,7])), ( int(final_data.iloc[i,6]) + int(final_data.iloc[i,8]), int(final_data.iloc[i,7]) + int(final_data.iloc[i,9])), color=(255,0,0), thickness=2)
 
-        pd.DataFrame(final_data).to_csv('text.csv')
+            image_path = './static/img2.jpg'
 
-        st.image(img)
-        st.image(img2)
+            if os.path.exists(image_path):
+                os.remove(image_path)
+
+            cv2.imwrite(image_path, img2)
+
+            pd.DataFrame(final_data).to_csv('text.csv')
+
+            # st.image(img)
+            st.image(img2)
 
 
 
-        # Define the HTML hyperlink with the image
-        html_string = f'<a href="{image_path}" target="_blank"><img src="{image_path}" width="200" caption="legend"></a>'
+            # # Define the HTML hyperlink with the image
+            # html_string = f'<a href="{image_path}" target="_blank"><img src="{image_path}" width="200" caption="legend"></a>'
 
-        # Display the image using `st.markdown`
-        st.markdown(html_string, unsafe_allow_html=True)
+            # # Display the image using `st.markdown`
+            # st.markdown(html_string, unsafe_allow_html=True)
