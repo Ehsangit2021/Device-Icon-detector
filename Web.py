@@ -57,23 +57,24 @@ with st.spinner('Wait for it...'):
 
         st.write(pd.DataFrame(final_data))
 
+        img2 = img
+
         for i in range(len(final_data)):
-            if i == 898:
-                print(' ')
-            print(i)
             if final_data.iloc[i,11] == None:
                 continue
             if 'VB' in final_data.iloc[i,11]:
-                img2 = cv2.rectangle(np.array(img), (int(final_data.iloc[i,6]),int(final_data.iloc[i,7])), ( int(final_data.iloc[i,6]) + int(final_data.iloc[i,8]), int(final_data.iloc[i,7]) + int(final_data.iloc[i,9])), color=(0,255,0), thickness=20)
+                img2 = cv2.rectangle(np.array(img2), (int(final_data.iloc[i,6]),int(final_data.iloc[i,7])), ( int(final_data.iloc[i,6]) + int(final_data.iloc[i,8]), int(final_data.iloc[i,7]) + int(final_data.iloc[i,9])), color=(255,0,0), thickness=2)
 
-        cv2.imwrite("img2.jpg", img2)
+        image_path = './static/img2.jpg'
+
+        cv2.imwrite(image_path, img2)
 
         pd.DataFrame(final_data).to_csv('text.csv')
 
+        st.image(img)
         st.image(img2)
 
 
-        image_path = 'img2.jpg'
 
         # Define the HTML hyperlink with the image
         html_string = f'<a href="{image_path}" target="_blank"><img src="{image_path}" width="200" caption="legend"></a>'

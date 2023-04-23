@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "module": "streamlit",
-            "args": ["run", "Web.py"],
+            "args": ["run", "Web.py", "--server.enableStaticServing=True"],
             "justMyCode": true
         }
     ]
