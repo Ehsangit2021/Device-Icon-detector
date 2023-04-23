@@ -1,0 +1,1 @@
+streamlit run Aval.py --server.port 8507 headless=true --server.fileWatcherType none
